@@ -17,8 +17,24 @@ namespace ServiceReservasi
 
         public string deletePemesanan(string IDPemesanan)
         {
-            throw new NotImplementedException();
+            string a = "gagal";
+            try
+            {
+                string sql = "delete from dbo.Pemesanan where ID_reservasi = '" + IDPemesanan + "'";
+                connection = new SqlConnection(constring); //fungsi konek ke database
+                com = new SqlCommand(sql, connection);
+                connection.Open();
+                com.ExecuteNonQuery();
+                connection.Close();
+                a = "sukses";
+            }
+            catch (Exception es)
+            {
+                Console.WriteLine(es);
+            }
+            return a;
         }
+
 
         public List<DetailLokasi> DetailLokasi()
         {
@@ -51,9 +67,26 @@ namespace ServiceReservasi
             return LokasiFull;
         }
 
-        public string editPemesanan(string IDPemesanan, string NamaCustomer)
+        public string editPemesanan(string IDPemesanan, string NamaCustomer, string No_telpon)
         {
-            throw new NotImplementedException();
+            string a = "gagal";
+            try
+            {
+                string sql = "update dbo.Pemesanan set Nama_customer = '" + NamaCustomer + "', No_telpon = '" + No_telpon + "'" +
+                    "where ID_reservasi = '" + IDPemesanan + "'";
+                connection = new SqlConnection(constring); //fungsi konek database
+                com = new SqlCommand(sql, connection);
+                connection.Open();
+                com.ExecuteNonQuery();
+                connection.Close();
+
+                a = "sukses";
+            }
+            catch (Exception es)
+            {
+                Console.WriteLine(es);
+            }
+            return a;
         }
 
         public string GetData(int value)
@@ -72,6 +105,12 @@ namespace ServiceReservasi
                 connection.Open();
                 com.ExecuteNonQuery();
                 connection.Close();
+
+                string sql2 = "update dbo.Lokasi set Kouta = Kouta - " + JumlahPemesanan + " where ID_lokasi = '" + IDLokasi + "'";
+                com = new SqlCommand(sql2, connection); //untuk konek ke database
+                connection.Open();
+                com.ExecuteNonQuery();
+                connection.Close();
                 a = "sukses";
             }
             catch (Exception es)
@@ -83,7 +122,33 @@ namespace ServiceReservasi
 
         public List<Pemesanan> Pemesanan()
         {
-            throw new NotImplementedException();
+            List<Pemesanan> pemesanans = new List<Pemesanan>();
+            try
+            {
+                string sql = "select ID_reservasi, Nama_customer, No_telpon," + "Jumlah_pemesanan, Nama_Lokasi from dbo.Pemesanan p join dbo.Lokasi 1 on p.ID_lokasi = 1.ID_lokasi";
+                connection = new SqlConnection(constring); // fungsi konek ke database
+                com = new SqlCommand(sql, connection); //proses execute query
+                connection.Open(); //membuka koneksi
+                SqlDataReader reader = com.ExecuteReader(); //menampilkan data query
+                while (reader.Read())
+                {
+                    //Nama class
+                    Pemesanan data = new Pemesanan(); //Deklarasi data, mengambil 1persatu dari database
+                    //bentuk array
+                    data.IDPemesanan = reader.GetString(0);
+                    data.NamaCustomer = reader.GetString(1);
+                    data.NoTelpon = reader.GetString(2);
+                    data.JumlahPemesanan = reader.GetString(3);
+                    data.Lokasi = reader.GetString(4);
+                    pemesanans.Add(data); //mengumpulkan data yang awalnya dari array
+                }
+                connection.Close(); //menutup akses ke database
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            return pemesanans;
         }
 
         public List<CekLokasi> ReviewLokasi()
