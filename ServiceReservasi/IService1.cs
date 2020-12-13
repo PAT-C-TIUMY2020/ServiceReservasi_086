@@ -23,11 +23,45 @@ namespace ServiceReservasi
         List<DetailLokasi> DetailLokasi(); //menampilkan detail lokasi
         [OperationContract]
         List<Pemesanan> Pemesanan();
+
+        [OperationContract]
+        string Login(string username, string password);
+
+        [OperationContract]
+        string Register(string username, string password, string kategori);
+
+        [OperationContract]
+        string UpdateRegister(string username, string password, string kategori, int id);
+
+        [OperationContract]
+        string DeleteRegister(string username);
+
+        [OperationContract]
+        List<DataRegister> DataRegist();
+
+
+
+        //[OperationContract]
+        //CompositeType GetDataUsingDataContract(CompositeType composite);
+
+        // TODO: Add your service operations here
+    }
+}
+
+[DataContract]
+public class DataRegister
+    {
+    [DataMember(Order = 1)]
+    public int id { get; set; }
+    [DataMember(Order = 2)]
+    public string username { get; set; }
+    [DataMember(Order = 3)]
+    public string password { get; set; }
+    [DataMember(Order = 4)]
+    public string kategori { get; set; }
     }
 
-
-
-    [DataContract]
+[DataContract]
     public class CekLokasi
     {
         [DataMember]
@@ -63,6 +97,6 @@ namespace ServiceReservasi
         [DataMember]
         public string JumlahPemesanan { get; set; }
         [DataMember]
+        public string IDLokasi { get; set; }
         public string Lokasi { get; set; }
     }
-}
